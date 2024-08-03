@@ -1,0 +1,54 @@
+%start Map1::Start
+%class Labstr
+%header labstr.h
+//[]- transition guard
+// в примерах объект называется ctxt при создании автомата это также
+%map Map1
+%%
+Start{ // В конечном автомате было много состояний
+    Letter(symb: char)[ctxt.getCount() < 3]     nil     {addsymbbuf(symb); setCount(ctxt.getCount() + 1);} // функция первращающая символ в число
+    Digit(pdigit: char)      Unacceptable    { } // ctxt значит, что дергаем метод класса
+    SpaceOrTab[ctxt.getCount() == 3 && ctxt.isTelorFax()]    Parsing   {cleanbuf(); setCount(0);} // вектор строк можно занулять здесь и создать деструктор можно
+    SpaceOrTab[ctxt.getCount() == 3 && ctxt.isSms()]     Parsing     { cleanbuf(); setCount(0);}
+    PunctMark(symb: char)   Unacceptable    {}
+    Letter(symb: char)      Unacceptable     {}
+    Unknown     Unacceptable    {}
+    EOS     Start     {Unacceptable(); cleanbuf(); setsmsflagzero(); setCount(0);} // для дальнейшего использования
+}
+Parsing{
+    PunctMark(symb: char)[(ctxt.getCount() == 0 || ctxt.getCount() == 13) && symb == '+']     nil     {addsymbbuf(symb); setCount(1);}
+    PunctMark(symb: char)[ctxt.getCount() == 12 && symb == ',']     nil     {  addnum(); setCount(13); cleanbuf(); }// cleanbuf необязательно
+    Digit(pdigit: char)[ctxt.getCount() > 0 && ctxt.getCount() < 12]      nil      {addsymbbuf(pdigit); setCount(ctxt.getCount() + 1);}
+    Digit(pdigit: char)       Unacceptable    {}
+    SpaceOrTab[ctxt.smsfor() && ctxt.getCount() == 12]    Message     {addnum(); setCount(0);}
+    SpaceOrTab      Unacceptable    {}
+    PunctMark(symb: char)       Unacceptable    {}
+    Letter(symb: char)      Unacceptable    {}
+    Unknown     Unacceptable    {}
+    EOS[ctxt.getCount() == 12]     Start     {addnum(); Acceptable(); cleanbuf(); setsmsflagzero(); setCount(0);}
+    EOS     Start     {Unacceptable(); cleanbuf(); setsmsflagzero(); setCount(0);}
+}
+Message{
+    Letter(symb: char)[ctxt.getCount() < 64]     nil     {setCount(ctxt.getCount() + 1);}
+    Letter(symb: char)      Unacceptable    {}
+    Digit(pdigit: char)[ctxt.getCount() < 64]       nil    {setCount(ctxt.getCount() + 1);}
+    Digit(pdigit: char)       Unacceptable    {}
+    SpaceOrTab      Unacceptable    {}
+    Unknown     Unacceptable {}
+    PunctMark(symb: char)[(ctxt.getCount() < 64) &&( symb == '%' || symb == '.' || symb == ',' || symb == '!' || symb == '?')] nil {setCount(ctxt.getCount() + 1);}
+    PunctMark(symb: char)       Unacceptable    {}
+    EOS[ctxt.getCount() > 0 && ctxt.getCount() <= 64]     Start     {Acceptable(); cleanbuf(); setsmsflagzero(); setCount(0);}
+    EOS     Start     {Unacceptable(); cleanbuf(); setsmsflagzero(); setCount(0);}
+}
+Unacceptable{
+    Letter(symb: char) nil {}
+    Digit(pdigit: char)   nil {}
+    SpaceOrTab  nil {}
+    PunctMark(symb: char)   nil {}
+    Unknown     nil {}
+    EOS     Start     {Unacceptable(); cleanbuf(); setsmsflagzero(); setCount(0);}
+}
+Default{
+
+}
+%%

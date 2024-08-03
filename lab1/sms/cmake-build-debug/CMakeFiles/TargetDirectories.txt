@@ -1,0 +1,3 @@
+C:/Users/Марат/CLionProjects/sms/cmake-build-debug/CMakeFiles/sms.dir
+C:/Users/Марат/CLionProjects/sms/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Марат/CLionProjects/sms/cmake-build-debug/CMakeFiles/rebuild_cache.dir
