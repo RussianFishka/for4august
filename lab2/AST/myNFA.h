@@ -10,6 +10,7 @@
 #include <map>
 #include "defast.h"
 #include <memory>
+//#include "myDFA.h"
 // parent??
 // имя у автомата будет
 struct Transition{
@@ -48,6 +49,7 @@ public:
     std::string name;
     std::map<std::shared_ptr<Transition> , std::shared_ptr<NFA>> capture_groups; // int - начальное состояние автомата сквозная нумерация
 public:
+    //NFA(std::shared_ptr<DFA>);
     void Myprint();
     explicit NFA(Ast & myast);
     NFA(int s, std::string &pname);

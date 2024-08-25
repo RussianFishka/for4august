@@ -1,0 +1,40 @@
+<PROGRAM>
+
+<FUNC name = main>
+<VARDECLARATION>
+
+<VAR = first [CONST = FALSE] > <TYPE> INT </TYPE> <DIMENSIONS count = 2>
+<DIMENSION> 3 </DIMENSION> <DIMENSION> 4 </DIMENSION> </DIMENSIONS>
+<VALUES>
+<VALUE>0 </VALUE> <VALUE> 1 </VALUE> <VALUE> 2 </VALUE> <VALUE> 3 </VALUE>
+<VALUE>4 </VALUE> <VALUE> 5 </VALUE> <VALUE> 6 </VALUE> <VALUE> 7 </VALUE>
+<VALUE>8 </VALUE> <VALUE> 9 </VALUE> <VALUE> 10 </VALUE> <VALUE> 11 </VALUE>
+ </VALUES> </VAR>
+
+<VAR = second [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+3 </VALUE> </VALUES> </VAR>
+
+ <VAR = third [CONST = FALSE] > <TYPE> BOOL </TYPE>  <VALUES> <VALUE>
+true </VALUE> </VALUES> </VAR>
+
+<VAR = fourth [CONST = FALSE] > <TYPE> INT </TYPE> <DIMENSIONS count = 2>
+<DIMENSION> 3 </DIMENSION> <DIMENSION> 4 </DIMENSION> </DIMENSIONS></VAR>
+
+ </VARDECLARATION>
+
+<SWITCH>
+    <CONDITION> <CHECK> 0 </CHECK> <DO>  <MIN> 3 5 1 </MIN> </DO> </CONDITION>
+    <CONDITION> <CHECK> 1 </CHECK> <DO>  <MAX> 3 5 1 </MAX> </DO> </CONDITION>
+</SWITCH>
+<CALL> calculate </CALL>
+</FUNC>
+<FUNC name = calculate>
+<WHILE><CHECK> <EQ>     <VAR name = <third> /VAR> true </EQ> </CHECK><DO>
+     <ASSIGN> <VALUE> false </VALUE> <TO>    <VAR name = <third> /VAR> </TO> </ASSIGN>
+     <MUL> 10 5 </MUL>
+</WHILE>
+<ASSIGN> <VALUE> <VAR name = <first> /VAR> </VALUE> <TO>    <VAR name = <fourth> /VAR> </TO> </ASSIGN>
+<SUB> 10 <VAR name = <fourth> <DIM> <INDEX> 2 </INDEX> </DIM> <DIM> <INDEX> 3 </INDEX> </DIM> /VAR> </SUB>
+</FUNC>
+
+</PROGRAM>

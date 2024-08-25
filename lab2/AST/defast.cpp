@@ -31,13 +31,67 @@ void Ast::del_escapes_properly(std::list<Node *> &mylist){
     std::list<Node *>::iterator ptr = mylist.begin(); // отсюда включительно идет просмотр листьев и деревьев
     std::string operations = "*?|<>{}()";
     while(ptr != mylist.end()) {// удалим все символы экранирования
+        if((*ptr)->symbol == '*'){ // добавил
+            (*ptr)->true_symbol = true;
+            ptr++;
+            continue;
+        }
+        if((*ptr)->symbol == '&'){ // добавил
+            (*ptr)->true_symbol = true;
+            ptr++;
+            continue;
+        }
+        if((*ptr)->symbol == '.'){
+            auto next = ptr;
+            next++;
+            if(next != mylist.end() && (*next)->symbol == '.'){
+                auto nextnext = next;
+                nextnext++;
+                if(nextnext != mylist.end() && (*nextnext)->symbol == '.'){
+                    (*ptr)->symbol = '*';
+                    (*ptr)->true_symbol = false;
+                    ptr++;
+                    delete (*ptr);
+                    mylist.erase(ptr);
+                    ptr++;
+                    delete (*ptr);
+                    mylist.erase(ptr);
+                    ptr++;
+                    continue;
+                }
+                else{
+                    ptr++;
+                    ptr++;
+                    continue;
+                }
+
+            }
+            else{
+                ptr++;
+                continue;
+            }
+        }
         if ((*ptr)->symbol == '%') {
             delete (*ptr);
             mylist.erase(ptr);
             ptr++;
             if(ptr != mylist.end()){
+                // клини добавил
+                if((*ptr)->symbol == '.'){
+                    auto next = ptr;
+                    next++; // на возможную 2 точку
+                    if(next != mylist.end() && (*next)->symbol == '.'){
+                        ptr++;
+                        ptr++;
+                        if(ptr != mylist.end() && (*ptr)->symbol == '.'){ // на 3 точку должны указывать
+                        }
+                        else{
+                            throw std::logic_error("3-ья точка где?");
+                        }
+                    }// else - обычная ситуация одна точка экранирова
+                }
                 // если затем идет процент => экранирован процент
-                if (operations.find((*ptr)->symbol) != -1) { // если экранирован символ операции find возвращает -1, если символ не найден
+                else if (operations.find((*ptr)->symbol) != -1) { // если экранирован символ операции find возвращает -1, если символ не найден
                     (*ptr)->true_symbol = true;
                 }
                 ptr++; // третий символ анализируется
@@ -86,20 +140,30 @@ Ast::Ast(const std::string &myregex) {
     }
     mylist.push_back(new Node{')'}); // подготовка к алгоритму из регулярки в сд
     Ast::del_escapes_properly(mylist);
+    //std::list<Node *>::iterator ptr10;
     while(mylist.size() != 1){
         auto set = Ast::find_first_and_last(mylist.begin(), mylist.end()); // будем работать только внутри этой пары скобок, которая вернется
         std::list<Node *>::iterator ptr = set.first;
         ptr++; // хотим установить указатель на место прохода
         Node * father = nullptr; // отец группы захвата.
+        //std::cout << "My world" << std::endl;
         if((*ptr)->symbol == '<' && !((*ptr)->true_symbol) && (*ptr)->left == nullptr){ // проверка на группу захвата следующий после скобки символ это символ группы захвата?
             father = *ptr;// вся дальнейшая операция это группа захвата. Значит этот символ будет отцом имя будет удалено и вторая кавычка
             ptr++;
+            //std::cout << "My world" << std::endl;
             while((*ptr)->symbol != '>'){
                 father->capture_group_cbracketsnum += (*ptr)->symbol;
+                //ptr10 = ptr;
+                //ptr10++;
                 delete (*ptr);
+                //std::cout << "My world" << std::endl;
                 mylist.erase(ptr);
+                //std::cout << "My world" << std::endl;
                 ptr++;
+                //ptr = ptr10;
+                //std::cout << "My world" << std::endl;
             }
+            //std::cout << "My world" << std::endl;
             if( father->capture_group_cbracketsnum.empty()){
                 throw std::logic_error(" нет имени в именованной группе захвата");
             }
@@ -116,6 +180,7 @@ Ast::Ast(const std::string &myregex) {
             ptr++; // установили указатель на место, в котором допустим проход.
         } // весь дальнейший алгоритм как будто без существования группы захвата. В конце только надо будет присоединить ребенка к отцу.
         // если у символа операция нет детей, то ребенок - эпсилон
+        //std::cout << "My world" << std::endl;
         std::list<Node *>::iterator prev_ptr = ptr;
         std::string repaunvailoper = "*?{|";
         while(ptr != set.second){// замыкание Клини и опциональный оператор and curly brackets
@@ -164,7 +229,7 @@ Ast::Ast(const std::string &myregex) {
             ptr_next++;
         }
         while(ptr_next != set.second){ //concatenation
-            if(((*ptr)->symbol != '|' || (*ptr)->true_symbol) && ((*ptr_next)->symbol != '|' || (*ptr_next)->true_symbol)){ // операнды это не операция или
+            if(((*ptr)->symbol != '|' || (*ptr)->true_symbol || (*ptr)->left || (*ptr)->right) && ((*ptr_next)->symbol != '|' || (*ptr_next)->true_symbol || (*ptr_next)->left || (*ptr_next)->right)){ // операнды это не операция или
                 auto concat = mylist.insert(ptr_next, new Node{'&'}); // этих узлов еще не было.
                 (*concat)->left = *ptr;
                 mylist.erase(ptr);

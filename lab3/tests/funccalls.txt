@@ -1,0 +1,76 @@
+<PROGRAM>
+    <VARDECLARATION>
+        <VAR  = a [ CONST = FALSE ] > < TYPE > INT < / TYPE > < / VAR >
+        <VAR  = b [ CONST = FALSE ] > < TYPE > INT < / TYPE > < / VAR >
+        <VAR  = i [ CONST = FALSE ] > < TYPE > INT < / TYPE > < / VAR >
+    </VARDECLARATION>
+    <FUNC name = KARFAGEN>
+               <VARDECLARATION>
+                   <VAR  = m [ CONST = FALSE ] > < TYPE > INT < / TYPE > < / VAR >
+               </VARDECLARATION>
+               <ASSIGN>
+                    <VALUE>
+                        <ADD>
+                            <VAR name=<a>  /VAR>
+                            1
+                        </ADD>
+                    </VALUE>
+                    <TO>
+                        <VAR name=<m>  /VAR>
+                    </TO>
+               </ASSIGN>
+
+               <ASSIGN>
+                    <VALUE>
+                        <ADD>
+                            <VAR name=<m>  /VAR>
+                            <VAR name=<b>  /VAR>
+                        </ADD>
+                    </VALUE>
+                    <TO>
+                        <VAR name=<b>  /VAR>
+                    </TO>
+               </ASSIGN>
+
+
+               <ASSIGN>
+                    <VALUE>
+                        <ADD>
+                            <VAR name=<i>  /VAR>
+                            1
+                        </ADD>
+                    </VALUE>
+                    <TO>
+                        <VAR name=<i>  /VAR>
+                    </TO>
+              </ASSIGN>
+              <SWITCH>
+                  <CONDITION> <CHECK> <NOT ><EQ>
+                                      <VAR name=<i>  /VAR>
+                                      15
+                                      </EQ>  </NOT></CHECK>
+                  <DO>  <CALL> KARFAGEN </CALL> </DO> </CONDITION>
+              </SWITCH>
+    </FUNC>
+
+    <FUNC name=main>
+        <ASSIGN><VALUE>2</VALUE>
+            <TO>
+                <VAR name= <a>  /VAR>
+            </TO>
+        </ASSIGN>
+        <ASSIGN>
+            <VALUE>0</VALUE>
+            <TO>
+                <VAR name= <b>  /VAR>
+            </TO>
+        </ASSIGN>
+        <ASSIGN>
+            <VALUE>0</VALUE>
+            <TO>
+                <VAR name=<i>  /VAR>
+            </TO>
+        </ASSIGN>
+         <CALL> KARFAGEN </CALL>
+    </FUNC>
+</PROGRAM>

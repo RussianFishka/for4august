@@ -11,6 +11,7 @@
 #include <iterator>
 #include <string>
 #include <list>
+// экранируются ...  не точка
 struct Node {
     Node* left = nullptr;
     Node* right = nullptr;

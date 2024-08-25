@@ -1,0 +1,3 @@
+C:/Users/Марат/CLionProjects/lab2ta/cmake-build-debug/CMakeFiles/lab2ta.dir
+C:/Users/Марат/CLionProjects/lab2ta/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Марат/CLionProjects/lab2ta/cmake-build-debug/CMakeFiles/rebuild_cache.dir

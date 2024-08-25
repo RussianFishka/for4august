@@ -1,0 +1,23 @@
+<PROGRAM><FUNC name = main>
+<ADD> 10 <DIV> 10 <DIV> 10 5 </DIV> </DIV> 6 </ADD>
+<VARDECLARATION>
+
+<VAR = first [CONST = FALSE] > <TYPE> INT </TYPE> <DIMENSIONS count = 1>
+<DIMENSION> 3 </DIMENSION> </DIMENSIONS> <VALUES> <VALUE>
+1 </VALUE> <VALUE> 2 </VALUE> <VALUE> 3 </VALUE> </VALUES> </VAR>
+
+ <VAR = second [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+ 3 </VALUE> </VALUES> </VAR>
+
+ </VARDECLARATION>
+<SUB> 10 8 </SUB>
+<SUB> 10 5 </SUB>
+<MUL> 10 5 </MUL>
+<DIV> 30  <VAR name = <second> /VAR> </DIV>
+<DIV> 30  <VAR name = <first> <DIM> <INDEX> 1 </INDEX> </DIM> /VAR> </DIV>
+<AND> true false </AND>
+<OR> true false </OR>
+ <MAX> <SUB> 10 8 </SUB> 3 5 1 </MAX>
+ <MIN> <SUB> 10 8 </SUB> 3 5 1 </MIN>
+</FUNC>
+</PROGRAM>
