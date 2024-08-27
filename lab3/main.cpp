@@ -6,19 +6,22 @@
 extern FILE *yyin;
 
 int main(int argc, char **argv) {
-    //printf("start!!");
-    fflush(stdout);
-    if (argc > 1) {
+    try {
         //printf("start!!");
-        yyin = fopen(argv[1], "r");
-        if (!yyin) {
-            perror(argv[1]);
-            return 1;
+        fflush(stdout);
+        if (argc > 1) {
+            //printf("start!!");
+            yyin = fopen(argv[1], "r");
+            if (!yyin) {
+                perror(argv[1]);
+                return 1;
+            }
+            //printf("start!!");
         }
-        //printf("start!!");
+        yyparse();
+        return 0;
     }
-    yyparse();
-    return 0;
+    catch(...){}
 }
 /*int main(int argc, char **argv) {
     typedef void* yyscan_t;

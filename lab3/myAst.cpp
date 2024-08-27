@@ -50,11 +50,11 @@ void ProgramNodePerf(ProgramNode * pn){
         std::cout << "The end of the program !" << std::endl;
     }
     catch(...){
-        std::cout << "mistakes" << std::endl;
+        /*std::cout << "mistakes" << std::endl;
         for(auto it = mistakes.begin(); it != mistakes.end(); ++it){
-            //std::cout << "Mistake /*at line*/ " << it->first << it->second << std::endl;
+            //std::cout << "Mistake at line " << it->first << it->second << std::endl;
             std::cout << "Mistake  "<< it->second << std::endl;
-        }
+        }*/
         freevars(your_scope.top());
         PerformDelete(pn);
         // PRINTMISTAKES
@@ -224,6 +224,7 @@ void PerformMove(MoveNode *movenode,  std::stack<std::map<std::string, VarNode *
         movenode->myrobot->sendDrones(rv.ival);
     }
     else if(movenode->movetype == getdrones){
+        std::cout << "get drones" << std::endl;
         Node *node = new ValueNode(movenode->myrobot->getcurDrones(), movenode->line);
         Node *nodevar = new ValueNode(movenode->name,std::vector<Node *>{}, movenode->line);
         auto asnode = new AssignNode(node, std::vector<Node *>{nodevar}, movenode->line );
@@ -303,7 +304,7 @@ void PerformFuncCall(FunctionCNode * cnode, std::stack<std::map<std::string, Var
     PerformFunction(pn->functions.find(cnode->name)->second, your_scope, mistakes, pn); // function call
 }
 void PerformSwitch(SwitchNode * node, std::stack<std::map<std::string, VarNode *> *> &your_scope, std::vector<std::pair<int, std::string>> * mistakes, ProgramNode * pn){
-    std::cout << "The beginning of the switch " << std::endl;
+    //std::cout << "The beginning of the switch " << std::endl;
     std::map<std::string, VarNode *> switchscope;
     your_scope.push(&switchscope);
     try {
@@ -335,7 +336,7 @@ void PerformSwitch(SwitchNode * node, std::stack<std::map<std::string, VarNode *
         }
         freevars(your_scope.top());
         your_scope.pop(); // область видимости исчезает
-        std::cout << "The end of the switch " << std::endl;
+        //std::cout << "The end of the switch " << std::endl;
     }
     catch(...){
         freevars(your_scope.top());
@@ -349,9 +350,91 @@ void PerformSwitch(SwitchNode * node, std::stack<std::map<std::string, VarNode *
 int PerformAssign(AssignNode * node, std::stack<std::map<std::string, VarNode *> *> &your_scope, std::vector<std::pair<int, std::string>> * mistakes, ProgramNode * pn){
     // многомерный случай
     std::cout << "The beginning of the assign " << std::endl;
+    if(node->expression->type == move){  // вставка
+        auto nv = (MoveNode *)node->expression;
+        if(nv->movetype != senddrones){
+            auto str = std::string("We cannot move here");
+            auto pair = std::make_pair(node->line, str);
+            mistakes->push_back(pair);
+            throw std::invalid_argument("We cannot move here");
+        }else{ // если в процессе выбросится исключение, то переменная все равно удалится.
+            // создаешь varfrom тут и копипастишь.
+            // сборка VarNode переделывание send drones
+            std::vector<int> dims;
+            dims.push_back(nv->myrobot->getRows());
+            dims.push_back(nv->myrobot->getColumns());
+            ReturnExpValue rv{};
+            rv = PerformExpression(nv->expression, mistakes, your_scope);
+            if(rv.vartype == vcell){
+                auto str = std::string(" cell? Here?");
+                auto pair = std::make_pair(nv->expression->line, str);
+                mistakes->push_back(pair);
+                throw std::domain_error("cell? Here?");
+            }
+            else if(rv.vartype == vbool){
+                rv.ival = rv.bval;
+            }
+            std::vector<CELL> recoin = nv->myrobot->sendDrones(rv.ival);
+            auto varfrom = new VarNode(std::string{"ff"}, false, vcell, dims, &recoin, node->line);
+            // освобождение varfrom в случае исключения
+            for(auto itvars = node->to.begin(); itvars != node->to.end(); ++itvars){
+                auto nameanddims = (ValueNode *)(*itvars);
+                auto var = stackdiving(nameanddims->name,your_scope);
+                if(var == nullptr){
+                    auto str = std::string("There is not a single variable with this name!");
+                    auto pair = std::make_pair(nameanddims->line, str);
+                    mistakes->push_back(pair);
+                    delete varfrom;
+                    throw std::invalid_argument("There is not a single variable with this name!!");
+                }
+                if(varfrom->vartype != var->vartype && (varfrom->vartype == vcell || var->vartype == vcell)){
+                    auto str = std::string("Assign should have same types or at least bool and int");
+                    auto pair = std::make_pair(var->line, str);
+                    mistakes->push_back(pair);
+                    delete varfrom;
+                    throw std::invalid_argument("Assign should have same types or at least bool and int");
+                }
+                if(var->dimensions.size() != varfrom->dimensions.size()){
+                    auto str = std::string("Correct indexes!");
+                    auto pair = std::make_pair(nameanddims->line, str);
+                    mistakes->push_back(pair);
+                    delete varfrom;
+                    throw std::invalid_argument("Correct indexes!");
+                }
+                // каждая размерность должна совпасть
+                auto it2 = varfrom->dimensions.begin();
+                for(auto it1 = var->dimensions.begin(); it1 != var->dimensions.end(); ++it1, ++it2 ){
+                    if(*it1 != *it2){
+                        auto str = std::string("Размерности должны быть одинаковыми");
+                        auto pair = std::make_pair(nameanddims->line, str);
+                        mistakes->push_back(pair);
+                        throw std::invalid_argument("Размерности должны быть одинаковыми");
+                    }
+                }
+                if(var->vartype == vint){
+                    auto vec1 = std::get<std::vector<int>*>(var->val);
+                    auto vec2 = std::get<std::vector<int>*>(varfrom->val);
+                    *vec1 = *vec2;
+                }
+                else if(var->vartype == vbool){
+                    auto vec1 = std::get<std::vector<bool>*>(var->val);
+                    auto vec2 = std::get<std::vector<bool>*>(varfrom->val);
+                    *vec1 = *vec2;
+                }
+                else if(var->vartype == vcell){
+                    auto vec1 = std::get<std::vector<CELL>*>(var->val);
+                    auto vec2 = std::get<std::vector<CELL>*>(varfrom->val);
+                    *vec1 = *vec2;
+                }
+            }
+            std::cout << "The end of the assign " << std::endl;
+            return 2; // все сделано
+        }
+    }
     if (node->expression->type == val) { // задали массив и его надо присвоить
         auto ytnode = (ValueNode *) node->expression;
         if (ytnode->vartype == vname) {
+            // вот тут создаю эту переменную
             auto varfrom = stackdiving(ytnode->name, your_scope);
             if (varfrom == nullptr) {
                 auto str = std::string("There is not a single variable with this name!");
@@ -479,7 +562,7 @@ void PerformWhile(WhileNode * node, std::stack<std::map<std::string, VarNode *> 
     bool exp = turnNodeintoBool(node->expression, mistakes, your_scope);
     std::map<std::string, VarNode *> whilescope;
     your_scope.push(&whilescope);
-    std::cout << "The beginning of the while " << std::endl;
+    //std::cout << "The beginning of the while " << std::endl;
     //std::cout << node->statements.size();
     try {
         while (exp) {
@@ -502,7 +585,7 @@ void PerformWhile(WhileNode * node, std::stack<std::map<std::string, VarNode *> 
             }
             exp = turnNodeintoBool(node->expression, mistakes, your_scope);
         }
-        std::cout << "The end of the while " << std::endl;
+        //std::cout << "The end of the while " << std::endl;
         freevars(your_scope.top());
         your_scope.pop(); // область видимости исчезает
     }
@@ -522,13 +605,13 @@ void PerformVardecl(Vardecl * vardecl, std::stack<std::map<std::string, VarNode 
     for(auto iteachvar = vardecl->vardecs.begin(); iteachvar != vardecl->vardecs.end(); ++iteachvar){
         auto curvar = (VardecNode *)(*iteachvar);
         auto checkname = stackdiving(curvar->name,your_scope);
-        if(checkname != nullptr){ // переменная с таким именем уже есть
+       /* if(checkname != nullptr){ // переменная с таким именем уже есть
             auto str = std::string("There is a variable that has been already added with the name ");
             str += checkname->name;
             auto pair = std::make_pair(curvar->line, str);
             mistakes->push_back(pair);
             //throw std::invalid_argument("There is a variable with the name ");
-        }
+        }*/
         std::vector<int> dims = std::move(turnNodesintoInts(curvar->dimensions, mistakes, your_scope));
         std::vector<ReturnExpValue> values;
         if(!curvar->val.empty()){ // инициализированная переменная
@@ -1020,6 +1103,7 @@ ReturnExpValue PerformExpression(Node *exp, std::vector<std::pair<int, std::stri
             auto ytnode = (UnaryOpNode *)exp;
             auto value = turnNodeintoBool(ytnode->operand,mistakes,your_scope);
             rv.bval = !value;
+            std::cout << "not - result " << rv.bval << std::endl;
         }
         else{ //eq
             rv.vartype = vbool;

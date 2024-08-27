@@ -1,0 +1,336 @@
+<PROGRAM>
+<VARDECLARATION>
+
+<VAR = visitmap [CONST = FALSE] > <TYPE> CELL </TYPE> <DIMENSIONS count = 2>
+<DIMENSION> 10 </DIMENSION> <DIMENSION> 10 </DIMENSION>  </DIMENSIONS> <VALUES> </VALUES> </VAR>
+
+<VAR = explored [CONST = FALSE] > <TYPE> CELL </TYPE> <DIMENSIONS count = 2>
+<DIMENSION> 10 </DIMENSION> <DIMENSION> 10 </DIMENSION>  </DIMENSIONS> <VALUES> </VALUES> </VAR>
+
+ <VAR = x [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+ 7 </VALUE> </VALUES> </VAR>
+
+ <VAR = y [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+ 1 </VALUE> </VALUES> </VAR>
+
+ <VAR = rows [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+ 10 </VALUE> </VALUES> </VAR>
+
+  <VAR = columns [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+  10 </VALUE> </VALUES> </VAR>
+
+  <VAR = dcount [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES>  </VALUES> </VAR>
+
+   <VAR = exfound  [CONST = FALSE] > <TYPE> BOOL </TYPE>  <VALUES> <VALUE>
+   false </VALUE> </VALUES> </VAR>
+
+ </VARDECLARATION>
+<FUNC name = main>
+
+
+<VARDECLARATION>
+
+         <VAR = i [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+         0 </VALUE> </VALUES> </VAR>
+
+          <VAR = j [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+          0 </VALUE> </VALUES> </VAR>
+
+          <VAR = p [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+          0 </VALUE> </VALUES> </VAR>
+
+         <VAR = r [CONST = FALSE] > <TYPE> BOOL </TYPE>  <VALUES> <VALUE>
+         true </VALUE> </VALUES> </VAR>
+
+          <VAR = l [CONST = FALSE] > <TYPE> BOOL </TYPE>  <VALUES> <VALUE>
+          true </VALUE> </VALUES> </VAR>
+
+          <VAR = u [CONST = FALSE] > <TYPE> BOOL </TYPE>  <VALUES> <VALUE>
+          true </VALUE> </VALUES> </VAR>
+
+          <VAR = d [CONST = FALSE] > <TYPE> BOOL </TYPE>  <VALUES> <VALUE>
+          true </VALUE> </VALUES> </VAR>
+
+</VARDECLARATION>
+<GETDRONSCOUNT> dcount </GETDRONSCOUNT>
+
+<WHILE>
+       <CHECK>
+            <NOT ><EQ>
+                <VAR name=<dcount>  /VAR>
+                0
+                </EQ>  </NOT>
+       </CHECK>
+       <DO>
+       <ASSIGN> <VALUE> <SENDDRONS> 1 </SENDDRONS> </VALUE> <TO>    <VAR name = <explored> /VAR> </TO> </ASSIGN>
+        <SWITCH>
+            <CONDITION> <CHECK> <EQ> <VAR name = <explored> <DIM> <INDEX> <VAR name= <x>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+                                            <VAR name = <explored> <DIM> <INDEX> <ADD> <VAR name= <x>  /VAR>  1 </ADD> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+                                              </EQ>  </CHECK> <DO>  <DOWN> 1 </ DOWN>                 <ASSIGN>
+                                                                      <VALUE>
+                                                                          <ADD>
+                                                                              <VAR name=<x>  /VAR>
+                                                                              1
+                                                                          </ADD>
+                                                                      </VALUE>
+                                                                      <TO>
+                                                                          <VAR name=<x>  /VAR>
+                                                                      </TO>
+                                                                  </ASSIGN> </DO> </CONDITION>
+
+            <CONDITION> <CHECK> <EQ> <VAR name = <explored> <DIM> <INDEX> <VAR name= <x>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+            <VAR name = <explored> <DIM> <INDEX> <SUB> <VAR name= <x>  /VAR>  1 </SUB> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+              </EQ>  </CHECK> <DO>  <UP> 1 </ UP>                 <ASSIGN>
+                                                                          <VALUE>
+                                                                              <SUB>
+                                                                                  <VAR name=<x>  /VAR>
+                                                                                  1
+                                                                              </SUB>
+                                                                          </VALUE>
+                                                                          <TO>
+                                                                              <VAR name=<x>  /VAR>
+                                                                          </TO>
+                                                                      </ASSIGN></DO> </CONDITION>
+
+            <CONDITION> <CHECK> <EQ> <VAR name = <explored> <DIM> <INDEX> <VAR name= <x>  /VAR>  </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR>  </INDEX> </DIM> /VAR>
+            <VAR name = <explored> <DIM> <INDEX> <VAR name= <x>  /VAR>   </INDEX> </DIM> <DIM> <INDEX> <ADD> <VAR name= <y>  /VAR>  1 </ADD> </INDEX> </DIM> /VAR>
+              </EQ>  </CHECK> <DO>  <RIGHT> 1 </ RIGHT>                 <ASSIGN>
+                                                                            <VALUE>
+                                                                                <ADD>
+                                                                                    <VAR name=<y>  /VAR>
+                                                                                    1
+                                                                                </ADD>
+                                                                            </VALUE>
+                                                                            <TO>
+                                                                                <VAR name=<y>  /VAR>
+                                                                            </TO>
+                                                                        </ASSIGN></DO> </CONDITION>
+
+
+            <CONDITION> <CHECK> <EQ> <VAR name = <explored> <DIM> <INDEX> <VAR name= <x>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+            <VAR name = <explored> <DIM> <INDEX> <VAR name= <x>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <SUB> <VAR name= <y>  /VAR>  1 </SUB> </INDEX> </DIM> /VAR>
+              </EQ>  </CHECK> <DO>  <LEFT> 1 </ LEFT>                 <ASSIGN>
+                                                                          <VALUE>
+                                                                              <SUB>
+                                                                                  <VAR name=<y>  /VAR>
+                                                                                  1
+                                                                              </SUB>
+                                                                          </VALUE>
+                                                                          <TO>
+                                                                              <VAR name=<y>  /VAR>
+                                                                          </TO>
+                                                                      </ASSIGN></DO> </CONDITION>
+
+        </SWITCH>
+        <GETDRONSCOUNT> dcount </GETDRONSCOUNT>
+
+        <ASSIGN> <VALUE> 0 </VALUE> <TO>    <VAR name = <i> /VAR> </TO> </ASSIGN>
+        <ASSIGN> <VALUE> 0 </VALUE> <TO>    <VAR name = <j> /VAR> </TO> </ASSIGN>
+
+        <WHILE><CHECK> <NOT > <EQ> <VAR name = <i> /VAR> <VAR name = <rows> /VAR>  </EQ> </NOT> </CHECK>  <DO>
+               <ASSIGN> <VALUE> 0 </VALUE> <TO>    <VAR name = <j> /VAR> </TO> </ASSIGN>
+               <WHILE><CHECK> <NOT > <EQ> <VAR name = <j> /VAR> <VAR name = <columns> /VAR>  </EQ> </NOT>  </CHECK><DO>
+                              <SWITCH>
+                                          <CONDITION> <CHECK> <EQ> <VAR name = <explored> <DIM> <INDEX> <VAR name= <i>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <j>  /VAR> </INDEX> </DIM> /VAR>
+                                          EXIT
+                                            </EQ>  </CHECK> <DO>     <ASSIGN>
+                                                                              <VALUE>
+                                                                                     0
+                                                                              </VALUE>
+                                                                              <TO>
+                                                                                     <VAR name=<dcount>  /VAR>
+                                                                              </TO>
+                                                                      </ASSIGN>
+
+                                                                    <ASSIGN>
+                                                                              <VALUE>
+                                                                                     true
+                                                                              </VALUE>
+                                                                              <TO>
+                                                                                     <VAR name=<exfound>  /VAR>
+                                                                              </TO>
+                                                                      </ASSIGN></DO> </CONDITION>
+
+                              </SWITCH>
+                              <ASSIGN> <VALUE> <ADD> <VAR name = <j> /VAR> 1 </ADD> </VALUE> <TO>    <VAR name = <j> /VAR> </TO> </ASSIGN>
+               </WHILE>
+                <ASSIGN> <VALUE> <ADD> <VAR name = <i> /VAR> 1 </ADD> </VALUE> <TO>    <VAR name = <i> /VAR> </TO> </ASSIGN>
+        </WHILE>
+</WHILE>
+<SWITCH>
+    <CONDITION> <CHECK> <EQ> <VAR name = <exfound> /VAR> true </EQ>  </CHECK> <DO>
+     <ASSIGN> <VALUE> <VAR name = <explored> /VAR> </VALUE> <TO>    <VAR name = <visitmap> /VAR> </TO> </ASSIGN>
+     <CALL> DFS </CALL>
+    </DO> </CONDITION>
+
+</SWITCH>
+
+
+     <ASSIGN> <VALUE> <VAR name = <explored> /VAR> </VALUE> <TO>    <VAR name = <visitmap> /VAR> </TO> </ASSIGN>
+     <CALL> DFUS </CALL>
+
+
+</FUNC>
+
+<FUNC name=DFS>
+<VARDECLARATION>
+
+         <VAR = curx [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+         0 </VALUE> </VALUES> </VAR>
+
+          <VAR = cury [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+          0 </VALUE> </VALUES> </VAR>
+
+
+</VARDECLARATION>
+<ASSIGN> <VALUE> <VAR name = <x> /VAR> </VALUE> <TO>    <VAR name = <curx> /VAR> </TO> </ASSIGN>
+<ASSIGN> <VALUE> <VAR name = <y> /VAR> </VALUE> <TO>    <VAR name = <cury> /VAR> </TO> </ASSIGN>
+
+<ASSIGN> <VALUE> WALL </VALUE> <TO>    <VAR name = <visitmap> <DIM> <INDEX> <VAR name= <x>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR> </TO> </ASSIGN>
+
+
+
+<SWITCH>
+            <CONDITION> <CHECK> <AND> <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX> <ADD> <VAR name= <x>  /VAR>  1 </ADD> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+             WALL
+              </EQ> </NOT> <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX> <ADD> <VAR name= <x>  /VAR>  1 </ADD> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+                                        UNDEF
+                                         </EQ> </NOT> </AND> </CHECK> <DO>
+              <ASSIGN> <VALUE> <ADD> <VAR name = <x> /VAR> 1 </ADD> </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <y> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              <DOWN> 1 </DOWN>
+              <CALL> DFS </CALL>
+              <UP> 1 </UP>
+              <ASSIGN> <VALUE>  <VAR name = <curx> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <cury> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+
+              </DO> </CONDITION>
+</SWITCH>
+
+<SWITCH>
+            <CONDITION> <CHECK> <AND> <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX> <SUB> <VAR name= <x>  /VAR>  1 </SUB> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+             WALL
+              </EQ> </NOT> <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX> <SUB> <VAR name= <x>  /VAR>  1 </SUB> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+                                        UNDEF
+                                         </EQ> </NOT> </AND> </CHECK> <DO>
+              <ASSIGN> <VALUE> <SUB> <VAR name = <x> /VAR> 1 </SUB> </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <y> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              <UP> 1 </UP>
+              <CALL> DFS </CALL>
+              <DOWN> 1 </DOWN>
+              <ASSIGN> <VALUE>  <VAR name = <curx> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <cury> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              </DO> </CONDITION>
+</SWITCH>
+
+<SWITCH>
+            <CONDITION> <CHECK> <AND> <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX> <VAR name= <x>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <ADD> <VAR name= <y>  /VAR>  1 </ADD>  </INDEX> </DIM> /VAR>
+             WALL
+              </EQ> </NOT> <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX> <VAR name= <x>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <ADD> <VAR name= <y>  /VAR>  1 </ADD>  </INDEX> </DIM> /VAR>
+                                        UNDEF
+                                         </EQ> </NOT> </AND> </CHECK> <DO>
+              <ASSIGN> <VALUE>  <VAR name = <x> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <ADD> <VAR name = <y> /VAR> 1 </ADD> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              <RIGHT> 1 </RIGHT>
+              <CALL> DFS </CALL>
+              <LEFT> 1 </LEFT>
+              <ASSIGN> <VALUE>  <VAR name = <curx> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <cury> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              </DO> </CONDITION>
+</SWITCH>
+
+<SWITCH>
+            <CONDITION> <CHECK> <AND> <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX>  <VAR name= <x>  /VAR>  </INDEX> </DIM> <DIM> <INDEX> <SUB> <VAR name= <y>  /VAR> 1 </SUB> </INDEX> </DIM> /VAR>
+             WALL
+              </EQ> </NOT> <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX>  <VAR name= <x>  /VAR>  </INDEX> </DIM> <DIM> <INDEX> <SUB> <VAR name= <y>  /VAR> 1 </SUB> </INDEX> </DIM> /VAR>
+                                        UNDEF
+                                         </EQ> </NOT> </AND> </CHECK> <DO>
+              <ASSIGN> <VALUE> <VAR name = <x> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <SUB> <VAR name = <y> /VAR> 1 </SUB> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              <LEFT> 1 </LEFT>
+              <CALL> DFS </CALL>
+              <RIGHT> 1 </RIGHT>
+              <ASSIGN> <VALUE>  <VAR name = <curx> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <cury> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              </DO> </CONDITION>
+</SWITCH>
+
+</FUNC>
+
+<FUNC name=DFUS>
+<VARDECLARATION>
+
+         <VAR = curxx [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+         0 </VALUE> </VALUES> </VAR>
+
+          <VAR = curyy [CONST = FALSE] > <TYPE> INT </TYPE>  <VALUES> <VALUE>
+          0 </VALUE> </VALUES> </VAR>
+
+
+</VARDECLARATION>
+<ASSIGN> <VALUE> <VAR name = <x> /VAR> </VALUE> <TO>    <VAR name = <curxx> /VAR> </TO> </ASSIGN>
+<ASSIGN> <VALUE> <VAR name = <y> /VAR> </VALUE> <TO>    <VAR name = <curyy> /VAR> </TO> </ASSIGN>
+
+<ASSIGN> <VALUE> WALL </VALUE> <TO>    <VAR name = <visitmap> <DIM> <INDEX> <VAR name= <x>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR> </TO> </ASSIGN>
+
+
+
+<SWITCH>
+            <CONDITION> <CHECK>  <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX> <ADD> <VAR name= <x>  /VAR>  1 </ADD> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+             WALL
+              </EQ> </NOT>  </CHECK> <DO>
+              <ASSIGN> <VALUE> <ADD> <VAR name = <x> /VAR> 1 </ADD> </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <y> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              <DOWN> 1 </DOWN>
+              <CALL> DFUS </CALL>
+              <UP> 1 </UP>
+              <ASSIGN> <VALUE>  <VAR name = <curxx> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <curyy> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+
+              </DO> </CONDITION>
+</SWITCH>
+
+<SWITCH>
+            <CONDITION> <CHECK>  <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX> <SUB> <VAR name= <x>  /VAR>  1 </SUB> </INDEX> </DIM> <DIM> <INDEX> <VAR name= <y>  /VAR> </INDEX> </DIM> /VAR>
+             WALL
+              </EQ> </NOT>  </CHECK> <DO>
+              <ASSIGN> <VALUE> <SUB> <VAR name = <x> /VAR> 1 </SUB> </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <y> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              <UP> 1 </UP>
+              <CALL> DFUS </CALL>
+              <DOWN> 1 </DOWN>
+              <ASSIGN> <VALUE>  <VAR name = <curxx> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <curyy> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              </DO> </CONDITION>
+</SWITCH>
+
+<SWITCH>
+            <CONDITION> <CHECK>  <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX> <VAR name= <x>  /VAR> </INDEX> </DIM> <DIM> <INDEX> <ADD> <VAR name= <y>  /VAR>  1 </ADD>  </INDEX> </DIM> /VAR>
+             WALL
+              </EQ> </NOT> </CHECK> <DO>
+              <ASSIGN> <VALUE>  <VAR name = <x> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <ADD> <VAR name = <y> /VAR> 1 </ADD> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              <RIGHT> 1 </RIGHT>
+              <CALL> DFUS </CALL>
+              <LEFT> 1 </LEFT>
+              <ASSIGN> <VALUE>  <VAR name = <curxx> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <curyy> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              </DO> </CONDITION>
+</SWITCH>
+
+<SWITCH>
+            <CONDITION> <CHECK>  <NOT> <EQ> <VAR name = <visitmap> <DIM> <INDEX>  <VAR name= <x>  /VAR>  </INDEX> </DIM> <DIM> <INDEX> <SUB> <VAR name= <y>  /VAR> 1 </SUB> </INDEX> </DIM> /VAR>
+             WALL
+              </EQ> </NOT>  </CHECK> <DO>
+              <ASSIGN> <VALUE> <VAR name = <x> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <SUB> <VAR name = <y> /VAR> 1 </SUB> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              <LEFT> 1 </LEFT>
+              <CALL> DFUS </CALL>
+              <RIGHT> 1 </RIGHT>
+              <ASSIGN> <VALUE>  <VAR name = <curxx> /VAR>  </VALUE> <TO>    <VAR name = <x> /VAR> </TO> </ASSIGN>
+              <ASSIGN> <VALUE> <VAR name = <curyy> /VAR> </VALUE> <TO>    <VAR name = <y> /VAR> </TO> </ASSIGN>
+              </DO> </CONDITION>
+</SWITCH>
+
+</FUNC>
+</PROGRAM>

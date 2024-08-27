@@ -16,7 +16,7 @@ int yylex(void);
 void yyerror(const char*);
 %}
 %{
-std::string labirint{"tests/labirint2.txt"};
+std::string labirint{"tests/labirint3.txt"};
 struct Position position{};
 %}
 %{
@@ -65,15 +65,21 @@ struct Robot robot{position, maze};
 %nterm <vecnode> expression_list values value_list var_list dim_list assign_list statement_list dimension_list dimensions
 %nterm <text> type
 %%
+//input:
+//    | input line
+//    | line
+ //   ;
 
 start:
     program_declaration { ProgramNodePerf((ProgramNode *)$1); }
 
 // только ValueNodes
 assignment:
-    '<' ASSIGN '>' '<' VALUE '>' expression '<' '/' VALUE '>' '<' TO '>' assign_list '<' '/' TO '>' '<' '/' ASSIGN '>'{  $$ = new AssignNode($7,*$15,yylineno); delete $15;
+    '<' ASSIGN '>' '<' VALUE '>' movement '<' '/' VALUE '>' '<' TO '>' assign_list '<' '/' TO '>' '<' '/' ASSIGN '>'{  $$ = new AssignNode($7,*$15,yylineno); delete $15;
                                                                                                                             std::cout << "Assignment" << std::endl;
                                                                                                                             }
+    |  '<' ASSIGN '>' '<' VALUE '>' expression '<' '/' VALUE '>' '<' TO '>' assign_list '<' '/' TO '>' '<' '/' ASSIGN '>'{$$ = new AssignNode($7,*$15,yylineno); delete $15;
+                                                                                                                          std::cout << "Assignment" << std::endl;}
     ;
 assign_list:
       var_value {$$ = new std::vector<Node*>();
@@ -264,14 +270,14 @@ value_list:
     ;
 
 while_loop:
-    '<' WHILE '>' '<' CHECK '>' expression '<' '/' CHECK '>' '<' DO '>' statement_list '<' '/' WHILE '>' { 
+    '<' WHILE '>' '<' CHECK '>' expression '<' '/' CHECK '>' '<' DO '>' statement_list '<' '/' WHILE '>' { std::cout << "While Loop" << std::endl;
                                                                                                           $$ = new WhileNode($7,*$15, yylineno);
                                                                                                           delete $15;  // Освобождаем память
                                                                                                            }
     ;
 
 switch_statement:
-    '<' SWITCH '>' condition_list '<' '/' SWITCH '>' { $$ = $4;  }
+    '<' SWITCH '>' condition_list '<' '/' SWITCH '>' { $$ = $4; std::cout << "Switch Statement" << std::endl; }
     ;
 
 condition_list:
@@ -289,7 +295,7 @@ condition_list:
     ; //{$$ = new SwitchNode(yylineno);}
 
 function_declaration:
-    '<' FUNC name '=' IDENTIFIER '>' statement_list '<' '/' FUNC '>' { $$ = new FunctionNode(*$5, *$7, yylineno); delete $7; delete $5;  }
+    '<' FUNC name '=' IDENTIFIER '>' statement_list '<' '/' FUNC '>' { $$ = new FunctionNode(*$5, *$7, yylineno); delete $7; delete $5; std::cout << "Function Declaration" << std::endl; }
     ;
 
 function_call:
@@ -297,7 +303,7 @@ function_call:
     ;
 
 program_declaration:
-    '<' PROGRAM '>' program_list '<' '/' PROGRAM '>' { $$ = $4;  }
+    '<' PROGRAM '>' program_list '<' '/' PROGRAM '>' { $$ = $4; std::cout << "Program Declaration" << std::endl; }
     ;
 
 program_list:

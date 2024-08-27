@@ -1,0 +1,9 @@
+<PROGRAM><FUNC name = main>
+
+<DOWN> 1 </ DOWN>
+<RIGHT> 3 </ RIGHT>
+<LEFT> 3 </ LEFT>
+<UP> 6 </ UP>
+<RIGHT> 5 </ RIGHT>
+</FUNC>
+</PROGRAM>

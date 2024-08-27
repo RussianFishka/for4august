@@ -14,8 +14,8 @@ struct Position {
 std::vector<std::vector<CELL>> loadMaze(const std::string& filename, Position& startPos);
 class Robot {
     private:
-        int maxDrones = 10;
-        int curDrones = 10;
+        int maxDrones = 25;
+        int curDrones = 25;
         Position pos;
         bool isOperational = true;
         std::vector<std::vector<CELL>> maze;
@@ -34,6 +34,12 @@ class Robot {
         }
         int getcurDrones(){
             return curDrones;
+        }
+        int getRows(){
+            return maze.size();
+        }
+        int getColumns(){
+            return maze[0].size();
         }
         bool moveUp() {
             if (!isOperational){
@@ -101,18 +107,20 @@ private:
             std::cout << "Робот столкнулся со стеной и больше не может двигаться." << std::endl;
             std::cout << "Лабиринт выглядел так " << std::endl;
             printMaze();
+            throw std::logic_error("");
         } else if (maze[x][y] == EXIT) {
             isOperational = false;
             std::cout << "Поздравляем! Робот нашел выход и завершил свою работу." << std::endl;
             std::cout << "Лабиринт выглядел так " << std::endl;
             printMaze();
+            throw std::logic_error("");
         }
     }
 public:
-    bool sendDrones(int sizeDrones) {
+    std::vector<CELL> sendDrones(int sizeDrones) {
         if(sizeDrones > curDrones){
             std::cout << "У нас нет столько разведчиков" << std::endl;
-            return false;
+            return flattenMatrix(explored);
         }
         std::vector<std::vector<CELL>> droneExploration = explored;
         for (int i = 0; i < sizeDrones; ++i) {
@@ -164,11 +172,12 @@ public:
                 droneExploration[dronePos.x][dronePos.y] = maze[dronePos.x][dronePos.y];
             }
         }
+        explored = droneExploration;
         std::cout << "Разведка" << std::endl;
         printDroneExploration(droneExploration);
         std::cout << "Разведка" << std::endl;
         curDrones -= sizeDrones;
-        return true;
+        return  flattenMatrix(droneExploration);
     }
 private:
     void printDroneExploration(const std::vector<std::vector<CELL>>& droneExploration) const {
@@ -184,6 +193,15 @@ private:
             std::cout << std::endl;
         }
         std::cout << std::endl;
+    }
+    std::vector<CELL> flattenMatrix(const std::vector<std::vector<CELL>>& matrix) {
+        std::vector<CELL> flatMatrix;
+        for (const auto& row : matrix) {
+            for (const auto& cell : row) {
+                flatMatrix.push_back(cell);
+            }
+        }
+        return flatMatrix;
     }
 private:
     void printMaze() const {
@@ -222,7 +240,6 @@ private:
         std::cout << std::endl;
     }
 };
-
 
 
 #endif //LAB3TA_MYROBOT_H

@@ -9,5 +9,4 @@
 #include <stdexcept>
 #include "myAst.h"
 int getLinearIndex(const std::vector<int>& dimensions, const std::vector<int>& positions, std::vector<std::pair<int, std::string>> * mistakes, Node *exp);
-
 #endif //LAB3TA_USEFULFUNCTIONS_H
